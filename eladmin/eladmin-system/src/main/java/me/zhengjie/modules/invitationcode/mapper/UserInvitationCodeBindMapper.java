@@ -54,4 +54,6 @@ public interface UserInvitationCodeBindMapper extends BaseMapper<UserInvitationC
      * @date: 2024/6/13 9:48
      */
     void deleteByUserIds(@Param("userIds") Set<Long> userIds);
+
+    List<UserInvitationCodeBind> findByInvitationCode(@Param("invitationCode")String invitationCode);
 }

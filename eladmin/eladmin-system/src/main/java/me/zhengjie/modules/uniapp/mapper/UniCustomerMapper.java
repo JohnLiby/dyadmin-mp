@@ -34,4 +34,32 @@ public interface UniCustomerMapper extends BaseMapper<UniCustomer> {
     IPage<UniCustomer> findAll(@Param("criteria") UniCustomerQueryCriteria criteria, Page<Object> page);
 
     List<UniCustomer> findAll(@Param("criteria") UniCustomerQueryCriteria criteria);
+
+    /**
+     * @description: 根据客户ID查询客户信息
+     * @param: Long customerId
+     * @returns: java.util.List<me.zhengjie.modules.uniapp.domain.UniCustomer>
+     * @auther: John Lee
+     * @date: 2024/6/13 20:48
+     */
+    List<UniCustomer> findAllByCustomerId(@Param("customerId") Long customerId);
+
+    /**
+     * @description: 根据客户账号查询客户信息
+     * @param: String customerNum
+     * @returns: java.util.List<me.zhengjie.modules.uniapp.domain.UniCustomer>
+     * @auther: John Lee
+     * @date: 2024/6/13 20:51
+     */
+    List<UniCustomer> findAllByCustomerNum(@Param("customerNum") String customerNum);
+
+    /**
+     * @description: 根据客户名称查询客户信息
+     * @param: String customerName
+     * @returns: java.util.List<me.zhengjie.modules.uniapp.domain.UniCustomer>
+     * @auther: John Lee
+     * @date: 2024/6/13 21:05
+     */
+    List<UniCustomer> findAllByCustomerName(@Param("customerName") String customerName);
+
 }

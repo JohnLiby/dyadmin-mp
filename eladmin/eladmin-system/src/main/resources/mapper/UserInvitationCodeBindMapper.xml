@@ -36,4 +36,12 @@
         </foreach>
     </delete>
 
+    <select id="findByInvitationCode"
+            resultType="me.zhengjie.modules.invitationcode.domain.UserInvitationCodeBind">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM user_invitation_code_bind AS uicb WHERE uicb.invitation_code = #{invitationCode}
+    </select>
+
+
 </mapper>

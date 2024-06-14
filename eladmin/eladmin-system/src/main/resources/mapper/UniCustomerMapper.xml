@@ -40,4 +40,23 @@
         </where>
         order by customer_id desc
     </select>
+
+    <select id="findAllByCustomerId" resultType="me.zhengjie.modules.uniapp.domain.UniCustomer">
+        SELECT
+        <include refid="Base_Column_List"/>
+        from uni_customer WHERE customer_id = #{customerId}
+    </select>
+
+    <select id="findAllByCustomerNum" resultType="me.zhengjie.modules.uniapp.domain.UniCustomer">
+        SELECT
+        <include refid="Base_Column_List"/>
+        from uni_customer WHERE customer_num = #{customerNum}
+    </select>
+
+    <select id="findAllByCustomerName" resultType="me.zhengjie.modules.uniapp.domain.UniCustomer">
+        SELECT
+        <include refid="Base_Column_List"/>
+        from uni_customer WHERE customer_name = #{customerName}
+    </select>
+
 </mapper>
