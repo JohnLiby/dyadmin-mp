@@ -16,6 +16,7 @@
 package me.zhengjie.modules.uniapp.mapper;
 
 import me.zhengjie.modules.uniapp.domain.UniCustomer;
+import me.zhengjie.modules.uniapp.domain.vo.UniCustomerDTO;
 import me.zhengjie.modules.uniapp.domain.vo.UniCustomerQueryCriteria;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
@@ -61,5 +62,9 @@ public interface UniCustomerMapper extends BaseMapper<UniCustomer> {
      * @date: 2024/6/13 21:05
      */
     List<UniCustomer> findAllByCustomerName(@Param("customerName") String customerName);
+
+    IPage<UniCustomerDTO> findTheAll(@Param("criteria") UniCustomerQueryCriteria criteria, Page<Object> page);
+
+    List<UniCustomerDTO> findTheAll(@Param("criteria") UniCustomerQueryCriteria criteria);
 
 }

@@ -17,12 +17,14 @@ package me.zhengjie.modules.uniapp.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import me.zhengjie.config.RsaProperties;
 import me.zhengjie.exception.BadRequestException;
 import me.zhengjie.exception.EntityExistException;
 import me.zhengjie.modules.invitationcode.domain.UserInvitationCodeBind;
 import me.zhengjie.modules.invitationcode.mapper.UserInvitationCodeBindMapper;
 import me.zhengjie.modules.invitationcode.service.UserInvitationCodeBindService;
 import me.zhengjie.modules.uniapp.domain.UniCustomer;
+import me.zhengjie.modules.uniapp.domain.vo.UniCustomerDTO;
 import me.zhengjie.utils.*;
 import lombok.RequiredArgsConstructor;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -30,6 +32,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import me.zhengjie.modules.uniapp.service.UniCustomerService;
 import me.zhengjie.modules.uniapp.domain.vo.UniCustomerQueryCriteria;
 import me.zhengjie.modules.uniapp.mapper.UniCustomerMapper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,21 +53,22 @@ public class UniCustomerServiceImpl extends ServiceImpl<UniCustomerMapper, UniCu
     private final UniCustomerMapper uniCustomerMapper;
     private final UserInvitationCodeBindService bindService;
     private final UserInvitationCodeBindMapper bindMapper;
+    private final PasswordEncoder passwordEncoder;
     //校验类型:创建
     private final static String VERIFY_TYPE_CREATE = "1";
     //校验类型:编辑
     private final static String VERIFY_TYPE_UPDATE = "2";
 
     @Override
-    public PageResult<UniCustomer> queryAll(UniCustomerQueryCriteria criteria, Page<Object> page){
-        return PageUtil.toPage(uniCustomerMapper.findAll(
+    public PageResult<UniCustomerDTO> queryAll(UniCustomerQueryCriteria criteria, Page<Object> page){
+        return PageUtil.toPage(uniCustomerMapper.findTheAll(
                 userVerification(criteria)//验证当前用户是否可以查看全部客户信息
                 , page));
     }
 
     @Override
-    public List<UniCustomer> queryAll(UniCustomerQueryCriteria criteria){
-        return uniCustomerMapper.findAll(
+    public List<UniCustomerDTO> queryAll(UniCustomerQueryCriteria criteria){
+        return uniCustomerMapper.findTheAll(
                 userVerification(criteria)//验证当前用户是否可以查看全部客户信息
         );
     }
@@ -94,18 +98,20 @@ public class UniCustomerServiceImpl extends ServiceImpl<UniCustomerMapper, UniCu
     }
 
     @Override
-    public void download(List<UniCustomer> all, HttpServletResponse response) throws IOException {
+    public void download(List<UniCustomerDTO> all, HttpServletResponse response) throws IOException {
         List<Map<String, Object>> list = new ArrayList<>();
-        for (UniCustomer uniCustomer : all) {
+        for (UniCustomerDTO uniCustomer : all) {
             Map<String,Object> map = new LinkedHashMap<>();
             map.put("客户账号", uniCustomer.getCustomerNum());
             map.put("客户名称", uniCustomer.getCustomerName());
             map.put("邀请码", uniCustomer.getInvitationCode());
+            map.put("邀请人", uniCustomer.getUsername());
             map.put("密码", uniCustomer.getPassword());
-            map.put("创建日期", uniCustomer.getCreateTime());
-            map.put("更新时间", uniCustomer.getUpdateTime());
-            map.put("创建人", uniCustomer.getCreateBy());
-            map.put("最后更新人", uniCustomer.getUpdateBy());
+            map.put("注册时间", uniCustomer.getCreateTime());
+//            map.put("更新时间", uniCustomer.getUpdateTime());
+//            map.put("创建人", uniCustomer.getCreateBy());
+//            map.put("最后更新人", uniCustomer.getUpdateBy());
+//            map.put("最后更新人", uniCustomer.getUpdateBy());
             list.add(map);
         }
         FileUtil.downloadExcel(list, response);
@@ -144,7 +150,13 @@ public class UniCustomerServiceImpl extends ServiceImpl<UniCustomerMapper, UniCu
         List<UniCustomer> allByCustomerNum = uniCustomerMapper.findAllByCustomerNum(uniCustomer.getCustomerNum());
         List<UserInvitationCodeBind> byInvitationCode = bindMapper.findByInvitationCode(uniCustomer.getInvitationCode());
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        String password;
         String userId;
+        try {
+            password = RsaUtils.decryptByPrivateKey(RsaProperties.privateKey, uniCustomer.getPassword());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         if (!allByCustomerName.isEmpty()){
             if (!Objects.equals(uniCustomer.getCustomerId(), allByCustomerName.get(0).getCustomerId())){
                 throw new BadRequestException("Please use another nike name, because it is occupied!");
@@ -169,6 +181,8 @@ public class UniCustomerServiceImpl extends ServiceImpl<UniCustomerMapper, UniCu
             uniCustomer.setUpdateBy(userId);
             uniCustomer.setUpdateTime(timestamp);
         }
+        //对密码加密
+        uniCustomer.setPassword(passwordEncoder.encode(password));
         return uniCustomer;
     }
 }

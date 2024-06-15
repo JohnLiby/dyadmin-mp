@@ -17,6 +17,7 @@ package me.zhengjie.modules.uniapp.rest;
 
 import me.zhengjie.annotation.Log;
 import me.zhengjie.modules.uniapp.domain.UniCustomer;
+import me.zhengjie.modules.uniapp.domain.vo.UniCustomerDTO;
 import me.zhengjie.modules.uniapp.service.UniCustomerService;
 import me.zhengjie.modules.uniapp.domain.vo.UniCustomerQueryCriteria;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,7 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.annotations.*;
@@ -36,10 +38,10 @@ import me.zhengjie.utils.PageResult;
 * @author John Lee
 * @date 2024-06-13
 **/
-@RestController
-@RequiredArgsConstructor
 @Api(tags = "客户信息管理")
+@RestController
 @RequestMapping("/api/uniCustomer")
+@RequiredArgsConstructor
 public class UniCustomerController {
 
     private final UniCustomerService uniCustomerService;
@@ -56,7 +58,7 @@ public class UniCustomerController {
     @Log("查询客户信息")
     @ApiOperation("查询客户信息")
     @PreAuthorize("@el.check('uniCustomer:list')")
-    public ResponseEntity<PageResult<UniCustomer>> queryUniCustomer(UniCustomerQueryCriteria criteria, Page<Object> page){
+    public ResponseEntity<PageResult<UniCustomerDTO>> queryUniCustomer(UniCustomerQueryCriteria criteria, Page<Object> page){
         return new ResponseEntity<>(uniCustomerService.queryAll(criteria,page),HttpStatus.OK);
     }
 

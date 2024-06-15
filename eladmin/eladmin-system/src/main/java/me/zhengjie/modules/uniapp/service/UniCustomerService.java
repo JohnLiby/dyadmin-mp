@@ -16,6 +16,7 @@
 package me.zhengjie.modules.uniapp.service;
 
 import me.zhengjie.modules.uniapp.domain.UniCustomer;
+import me.zhengjie.modules.uniapp.domain.vo.UniCustomerDTO;
 import me.zhengjie.modules.uniapp.domain.vo.UniCustomerQueryCriteria;
 import java.util.Map;
 import java.util.List;
@@ -38,14 +39,14 @@ public interface UniCustomerService extends IService<UniCustomer> {
     * @param page 分页参数
     * @return PageResult
     */
-    PageResult<UniCustomer> queryAll(UniCustomerQueryCriteria criteria, Page<Object> page);
+    PageResult<UniCustomerDTO> queryAll(UniCustomerQueryCriteria criteria, Page<Object> page);
 
     /**
     * 查询所有数据不分页
     * @param criteria 条件参数
     * @return List<UniCustomerDto>
     */
-    List<UniCustomer> queryAll(UniCustomerQueryCriteria criteria);
+    List<UniCustomerDTO> queryAll(UniCustomerQueryCriteria criteria);
 
     /**
     * 创建
@@ -71,5 +72,5 @@ public interface UniCustomerService extends IService<UniCustomer> {
     * @param response /
     * @throws IOException /
     */
-    void download(List<UniCustomer> all, HttpServletResponse response) throws IOException;
+    void download(List<UniCustomerDTO> all, HttpServletResponse response) throws IOException;
 }

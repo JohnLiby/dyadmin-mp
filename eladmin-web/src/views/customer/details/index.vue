@@ -53,11 +53,12 @@
         <el-table-column prop="customerNum" label="客户账号" />
         <el-table-column prop="customerName" label="客户名称" />
         <el-table-column prop="invitationCode" label="邀请码" />
+        <el-table-column prop="username" label="邀请码" />
         <el-table-column prop="password" label="密码" />
-        <el-table-column prop="createTime" label="创建日期" />
-        <el-table-column prop="updateTime" label="更新时间" />
+        <el-table-column prop="createTime" label="注册时间" />
+        <!-- <el-table-column prop="updateTime" label="更新时间" />
         <el-table-column prop="createBy" label="创建人" />
-        <el-table-column prop="updateBy" label="最后更新人" />
+        <el-table-column prop="updateBy" label="最后更新人" /> -->
         <el-table-column v-if="checkPer(['admin','uniCustomer:edit','uniCustomer:del'])" label="操作" width="150px" align="center">
           <template slot-scope="scope">
             <udOperation
@@ -80,6 +81,7 @@ import rrOperation from '@crud/RR.operation'
 import crudOperation from '@crud/CRUD.operation'
 import udOperation from '@crud/UD.operation'
 import pagination from '@crud/Pagination'
+// import { encrypt } from '@/utils/rsaEncrypt'
 
 const defaultForm = { customerId: null, customerNum: null, customerName: null, invitationCode: null, password: null, createTime: null, updateTime: null, createBy: null, updateBy: null }
 export default {
@@ -123,6 +125,11 @@ export default {
       return true
     }
   }
+  // ,
+  // handleSubmit(){
+  //   this.form.password = encrypt(this.form.password)
+  //   crud.submitCU()
+  // }
 }
 </script>
 
